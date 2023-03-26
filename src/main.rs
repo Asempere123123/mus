@@ -20,10 +20,11 @@ fn main() {
 
     get_hand_scores(&mut player1);
     get_hand_scores(&mut player2);
-    
-    println!("Player 1 has: {:?}", player1);
 
-    println!("{:?}", mazo)
+    println!("Player 1 has: {:?}", player1);
+    println!("Player 2 has: {:?}", player2);
+
+    println!("mazo: {:?}, wich ended in position: {}", mazo, current_card);
 }
 
 //Utility Funcitons
