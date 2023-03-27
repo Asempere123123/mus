@@ -144,3 +144,8 @@ pub fn repartir(player: &mut Player, mazo: [u8; 40], current_card: &mut usize) {
         }
     }
 }
+
+pub fn reset_player(player: &mut Player) {
+    player.cards = [0, 0, 0, 0];
+    player.score = [0, 0, 0, 0];
+}

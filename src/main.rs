@@ -1,6 +1,6 @@
 mod base;
 
-const ITERACIONES: u32 = 1000;
+const ITERACIONES: u32 = 100000000;
 
 fn main() {
     //Variables mazo
@@ -40,6 +40,9 @@ fn main() {
             }
             tabla_partidas_jugadas[i][player1.score[i] as usize] += 1;
         }
+
+        base::reset_player(&mut player1);
+        base::reset_player(&mut player2);
     }
 
     //calcular proporciones
