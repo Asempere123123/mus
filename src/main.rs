@@ -1,8 +1,13 @@
 mod base;
 
-const ITERACIONES: u32 = 100000000;
+const ITERACIONES: u32 = 1000000;
 
 fn main() {
+    //Variables del programa
+    let mut tabla_victorias: [[u32; 10000]; 4] = [[0; 10000]; 4];
+    let mut tabla_partidas_jugadas: [[u32; 10000]; 4] = [[0; 10000]; 4];
+    let mut tabla_winrate: [[f64; 10000]; 4] = [[0.0; 10000]; 4];
+
     //Variables mazo
     let mut current_card: usize = 0;
     let mut mazo: [u8; 40];
@@ -18,11 +23,6 @@ fn main() {
         cards: [0, 0, 0, 0],
         score: [0, 0, 0, 0],
     };
-
-    //Variables del programa
-    let mut tabla_victorias: [[u32; 10000]; 4] = [[0; 10000]; 4];
-    let mut tabla_partidas_jugadas: [[u32; 10000]; 4] = [[0; 10000]; 4];
-    let mut tabla_winrate: [[i64; 10000]; 4] = [[0; 10000]; 4];
 
     //Simulacion
     for _ in 0..ITERACIONES {
@@ -49,11 +49,12 @@ fn main() {
     for i in 0..tabla_victorias.len() {
         for j in 0..tabla_victorias[i].len() {
             if tabla_partidas_jugadas[i][j] != 0 {
-                tabla_winrate[i][j] = (tabla_victorias[i][j] / tabla_partidas_jugadas[i][j]) as i64;
+                tabla_winrate[i][j] =
+                    tabla_victorias[i][j] as f64 / tabla_partidas_jugadas[i][j] as f64;
             } else {
-                tabla_winrate[i][j] = 0;
+                tabla_winrate[i][j] = -1.0;
             }
         }
     }
-    println!("Winrate: {:?}", tabla_partidas_jugadas[0]);
+    println!("Winrate: {:?}", tabla_winrate[0]);
 }
