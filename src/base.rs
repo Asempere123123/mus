@@ -16,7 +16,7 @@ fn main() {
     let mut player1: Player = Player { //Tu
         cards: [0, 0, 0, 0],
         score: [0, 0, 0, 0],
-    }; 
+    };
     let mut player2: Player = Player { //Oponente
         cards: [0, 0, 0, 0],
         score: [0, 0, 0, 0],
