@@ -1,12 +1,15 @@
+use csv::WriterBuilder;
+
 mod base;
 
-const ITERACIONES: u32 = 1000000;
+const ITERACIONES: u32 = 1000;
 
 fn main() {
     //Variables del programa
     let mut tabla_victorias: [[u32; 10000]; 4] = [[0; 10000]; 4];
     let mut tabla_partidas_jugadas: [[u32; 10000]; 4] = [[0; 10000]; 4];
     let mut tabla_winrate: [[f64; 10000]; 4] = [[0.0; 10000]; 4];
+    let mut wrt = WriterBuilder::new().from_path("output.csv").expect("No se como, pero el programa ha petado.");
 
     //Variables mazo
     let mut current_card: usize = 0;
@@ -56,5 +59,12 @@ fn main() {
             }
         }
     }
-    println!("Winrate: {:?}", tabla_winrate[0]);
+
+    //Format results into csv
+    let first_layer: Vec<String> = (0..10000).map(|n| n.to_string()).collect();
+    wrt.write_record(&first_layer).expect("No se como, pero el programa ha petado.");
+    for i in 0..tabla_winrate.len() {
+        let content = tabla_winrate[i].iter().map(|&f| f.to_string()).collect::<Vec<_>>();
+        wrt.write_record(&content).expect("No se como, pero el programa ha petado.");
+    }
 }
