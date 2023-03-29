@@ -1,15 +1,15 @@
-use csv::WriterBuilder;
+use csv::Writer;
 
 mod base;
 
-const ITERACIONES: u32 = 1;
+const ITERACIONES: u32 = 1000000;
 
 fn main() {
     //Variables del programa
     let mut tabla_victorias: [[u32; 10000]; 4] = [[0; 10000]; 4];
     let mut tabla_partidas_jugadas: [[u32; 10000]; 4] = [[0; 10000]; 4];
     let mut tabla_winrate: [[f64; 10000]; 4] = [[0.0; 10000]; 4];
-    let mut wrt = WriterBuilder::new().from_path("output.csv").expect("No se como, pero el programa ha petado.");
+    let mut wrt = Writer::from_path("output.csv").expect("No se como, pero el programa ha petado.");
 
     //Benchmark + Debug
     let mut iteraciones_reales: u32 = 0;
