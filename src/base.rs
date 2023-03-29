@@ -42,18 +42,34 @@ pub struct Player {
     pub(crate) score: [u16; 4],
 }
 
-//Utility Funcitons
-pub fn new_deck(current_card: &mut usize) -> [u8; 40] {
-    *current_card = 0;
-
-    let mut mazo = BARAJA_ESPAÑOLA;
-    mazo.shuffle(&mut thread_rng());
-    mazo
+//Deck
+#[derive(Debug)]
+pub struct Deck {
+    pub(crate) cards: [u8; 40],
+    pub(crate) current_card: usize,
 }
 
-pub fn get_card(mazo: [u8; 40], current_card: &mut usize) -> u8 {
-    *current_card += 1;
-    mazo[*current_card - 1]
+//Utility Funcitons
+pub fn new_deck() -> Deck {
+    let mut mazo = BARAJA_ESPAÑOLA;
+    mazo.shuffle(&mut thread_rng());
+
+    Deck {
+        cards: mazo,
+        current_card: 0,
+    }
+}
+
+pub fn new_player() -> Player {
+    Player {
+        cards: [0, 0, 0, 0],
+        score: [0, 0, 0, 0],
+    }
+}
+
+pub fn get_card(mazo: &mut Deck) -> u8 {
+    mazo.current_card += 1;
+    mazo.cards[mazo.current_card - 1]
 }
 
 pub fn get_hand_scores(player: &mut Player) {
@@ -137,10 +153,10 @@ pub fn get_hand_scores(player: &mut Player) {
     player.score = [grande_score, chica_score, pair_score, juego_score];
 }
 
-pub fn repartir(player: &mut Player, mazo: [u8; 40], current_card: &mut usize) {
+pub fn repartir(player: &mut Player, mazo: &mut Deck) {
     for i in 0..4 {
         if player.cards[i] == 0 {
-            player.cards[i] = get_card(mazo, current_card);
+            player.cards[i] = get_card(mazo);
         }
     }
 }

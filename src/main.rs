@@ -2,7 +2,7 @@ use csv::WriterBuilder;
 
 mod base;
 
-const ITERACIONES: u32 = 100000000;
+const ITERACIONES: u32 = 1;
 
 fn main() {
     //Variables del programa
@@ -16,27 +16,18 @@ fn main() {
     let time = std::time::Instant::now();
 
     //Variables mazo
-    let mut current_card: usize = 0;
-    let mut mazo: [u8; 40];
+    let mut mazo;
 
     //Variables jugadores
-    let mut player1: base::Player = base::Player {
-        //Tu
-        cards: [0, 0, 0, 0],
-        score: [0, 0, 0, 0],
-    };
-    let mut player2: base::Player = base::Player {
-        //Oponente
-        cards: [0, 0, 0, 0],
-        score: [0, 0, 0, 0],
-    };
+    let mut player1: base::Player = base::new_player(); //Tu
+    let mut player2: base::Player = base::new_player(); //Oponente
 
     //Simulacion
     for _ in 0..ITERACIONES {
-        mazo = base::new_deck(&mut current_card);
+        mazo = base::new_deck();
 
-        base::repartir(&mut player1, mazo, &mut current_card);
-        base::repartir(&mut player2, mazo, &mut current_card);
+        base::repartir(&mut player1, &mut mazo);
+        base::repartir(&mut player2, &mut mazo);
 
         base::get_hand_scores(&mut player1);
         base::get_hand_scores(&mut player2);
