@@ -6,40 +6,12 @@ pub const BARAJA_ESPAÑOLA: [u8; 40] = [
     12, 1, 2, 3, 4, 5, 6, 7, 10, 11, 12,
 ];
 
-/*
-fn main() {
-    //Variables del mazo
-    let mut current_card: usize = 0;
-    let mazo: [u8; 40] = new_deck(&mut current_card);
-
-    //Variables jugadores
-    let mut player1: Player = Player { //Tu
-        cards: [0, 0, 0, 0],
-        score: [0, 0, 0, 0],
-    };
-    let mut player2: Player = Player { //Oponente
-        cards: [0, 0, 0, 0],
-        score: [0, 0, 0, 0],
-    };
-
-    repartir(&mut player1, mazo, &mut current_card);
-    repartir(&mut player2, mazo, &mut current_card);
-
-    get_hand_scores(&mut player1);
-    get_hand_scores(&mut player2);
-
-    println!("Player 1 has: {:?}", player1);
-    println!("Player 2 has: {:?}", player2);
-
-    println!("mazo: {:?}, wich ended in position: {}", mazo, current_card);
-}
-*/
-
 //Player
 #[derive(Debug)]
 pub struct Player {
     pub(crate) cards: [u8; 4],
     pub(crate) score: [u16; 4],
+    pub(crate) puntos: u8,
 }
 
 //Deck
@@ -64,6 +36,7 @@ pub fn new_player() -> Player {
     Player {
         cards: [0, 0, 0, 0],
         score: [0, 0, 0, 0],
+        puntos: 0,
     }
 }
 
@@ -164,4 +137,30 @@ pub fn repartir(player: &mut Player, mazo: &mut Deck) {
 pub fn reset_player(player: &mut Player) {
     player.cards = [0, 0, 0, 0];
     player.score = [0, 0, 0, 0];
+    player.puntos = 0;
+}
+
+pub fn calculate_count(player: &Player, player2: &Player) -> i16 {
+    let mut count: i16 = 0;
+
+    for i in 0..4 {
+        if [10, 11, 12, 3].contains(&player.cards[i]) {
+            count += 1;
+        } else if [5, 6, 7].contains(&player.cards[i]) {
+            //sumar 0 (no hacer nada)
+        } else {
+            count -= 1;
+        }
+    }
+
+    for i in 0..4 {
+        if [10, 11, 12, 3].contains(&player2.cards[i]) {
+            count += 1;
+        } else if [5, 6, 7].contains(&player.cards[i]) {
+            //sumar 0 (no hacer nada)
+        } else {
+            count -= 1;
+        }
+    }
+    count
 }

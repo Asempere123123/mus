@@ -1,68 +1,37 @@
-use csv::Writer;
-
 mod base;
+
+use csv::Writer;
 
 const ITERACIONES: u32 = 1000000;
 
 fn main() {
-    //Variables del programa
-    let mut tabla_victorias: [[u32; 10000]; 4] = [[0; 10000]; 4];
-    let mut tabla_partidas_jugadas: [[u32; 10000]; 4] = [[0; 10000]; 4];
-    let mut tabla_winrate: [[f64; 10000]; 4] = [[0.0; 10000]; 4];
-    let mut wrt = Writer::from_path("output.csv").expect("No se como, pero el programa ha petado.");
+    let mut partidas_jugadas: f32 = 0.0;
+    let mut partidas_cuenta: [f32; 50] = [0.0; 50];
 
-    //Benchmark + Debug
-    let mut iteraciones_reales: u32 = 0;
-    let time = std::time::Instant::now();
-
-    //Variables mazo
-    let mut mazo;
-
-    //Variables jugadores
-    let mut player1: base::Player = base::new_player(); //Tu
-    let mut player2: base::Player = base::new_player(); //Oponente
-
-    //Simulacion
     for _ in 0..ITERACIONES {
-        mazo = base::new_deck();
+        let mut mazo = base::new_deck();
+        let mut player1 = base::new_player();
+        let mut player2 = base::new_player();
 
         base::repartir(&mut player1, &mut mazo);
         base::repartir(&mut player2, &mut mazo);
 
-        base::get_hand_scores(&mut player1);
-        base::get_hand_scores(&mut player2);
+        let cuenta = base::calculate_count(&player1, &player2);
 
-        for i in 0..4 {
-            if player1.score[i] >= player2.score[i] {
-                tabla_victorias[i][player1.score[i] as usize] += 1;
-            }
-            tabla_partidas_jugadas[i][player1.score[i] as usize] += 1;
-        }
-
-        base::reset_player(&mut player1);
-        base::reset_player(&mut player2);
-        iteraciones_reales += 1;
+        partidas_cuenta[cuenta as usize + 25] += 1.0;
+        partidas_jugadas += 1.0;
     }
 
-    //calcular proporciones
-    for i in 0..tabla_victorias.len() {
-        for j in 0..tabla_victorias[i].len() {
-            if tabla_partidas_jugadas[i][j] != 0 {
-                tabla_winrate[i][j] =
-                    tabla_victorias[i][j] as f64 / tabla_partidas_jugadas[i][j] as f64;
-            } else {
-                tabla_winrate[i][j] = -1.0;
-            }
-        }
-    }
+    let proporcion_partidas_cuenta: Vec<String> = partidas_cuenta
+        .iter()
+        .map(|&f| (f/partidas_jugadas).to_string())
+        .collect();
 
-    //Format results into csv
-    let first_layer: Vec<String> = (0..10000).map(|n| n.to_string()).collect();
-    wrt.write_record(&first_layer).expect("No se como, pero el programa ha petado.");
-    for i in 0..tabla_winrate.len() {
-        let content = tabla_winrate[i].iter().map(|&f| f.to_string()).collect::<Vec<_>>();
-        wrt.write_record(&content).expect("No se como, pero el programa ha petado.");
-    }
-
-    println!("Iteraciones realizadas: {}, en {}s", iteraciones_reales, time.elapsed().as_secs());
+    //csv
+    let mut wrt = Writer::from_path("output.csv").unwrap();
+    let first_layer: Vec<String> = (-(25 as i32)..((25) as i32))
+    .map(|n| n.to_string()).collect();
+    
+    wrt.write_record(first_layer).unwrap();
+    wrt.write_record(proporcion_partidas_cuenta).unwrap();
 }
